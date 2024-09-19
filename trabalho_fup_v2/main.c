@@ -164,6 +164,35 @@ void alterarQuantidade(Aluno **alunos, int *num_alunos, int *num_materias) {
     }
 }
 
+// função para exportar notas para um arquivo txt
+void exportarNotas(Aluno *alunos, int num_alunos) {
+
+    // utilizamos o modo "w" de abertura, que é abrir um arquivo de texto para gravação. se o arquivo não existir, ele será criado. se já existir, o anterior será destruído.
+    FILE *file = fopen("notas.txt", "w");
+
+    //verifica se o arquivo foi criado
+    if (file == NULL) {
+        printf("Erro ao criar o arquivo.\n");
+        //caso nao tenha sido, a execução é parada
+        return;
+    }
+
+    //percorrerá alunos[i], que é a linha, indicando o aluno e em seguida a coluna de cada linha, que representa as notas dos alunos. ex: linha 1, posição 1: aluno 1. coluna 1: nota do aluno 1
+    for (int i = 0; i < num_alunos; i++) {
+        //escrevendo no arquivo, para cada aluno
+        fprintf(file, "Aluno %d:\n", i + 1);
+        for (int j = 0; j < alunos[i].num_materias; j++) {
+            //escrevendo no arquivo, para cada nota
+            fprintf(file, "Nota na materia %d: %.2f\n", j + 1, alunos[i].notas[j]);
+        }
+        fprintf(file, "\n");
+    }
+
+    // ao terminar de percorrer o for, irá fechar e salvar o arquivo.
+    fclose(file);
+    printf("Notas exportadas para 'notas.txt' com sucesso!\n");
+}
+
 
 int main() {
     int tam_alunos, tam_notas, opcao;
@@ -218,7 +247,8 @@ int main() {
         printf("4. Atualizar as notas de um aluno\n");
         printf("5. Atualizar as notas de toda a turma\n");
         printf("6. Alterar a quantidade de alunos e de materias\n");
-        printf("7. Sair\n");
+        printf("7. Exportar notas da turma\n");
+        printf("8. Sair\n");
         printf("Escolha uma opcao: ");
         scanf("%d", &opcao);
 
@@ -289,9 +319,13 @@ int main() {
                 alterarQuantidade(&alunos, &tam_alunos, &tam_notas);
                 break;
 
+            // caso 7 = exportar notas
+            case 7:
+                exportarNotas(alunos, tam_alunos);
+                break;
 
             // sair do laço de repetição
-            case 7:
+            case 8:
                 printf("Saindo...\n");
 
                 // libera a memoria alocada 
